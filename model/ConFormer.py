@@ -284,9 +284,7 @@ class ConFormer(nn.Module):
         x = self.attn_layers_st(x, c)
         x = self.encoder_proj(x.transpose(1, 2).flatten(-2))
         for layer in self.encoder:
-            x = x + layer(x)
-        # (batch_size, in_steps, num_nodes, model_dim)
-
+            x = x + layer(x) 
         out = self.output_proj(x).view(
             batch_size, self.num_nodes, self.out_steps, self.output_dim
         )
