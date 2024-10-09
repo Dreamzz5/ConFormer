@@ -215,7 +215,7 @@ class ConFormer(nn.Module):
 
         self.attn_layers_st = SelfAttentionLayer(
             self.model_dim,
-            self.model_dim - input_embedding_dim,
+            self.model_dim,
             mlp_ratio,
             num_heads,
             dropout,
@@ -241,10 +241,9 @@ class ConFormer(nn.Module):
 
         self.output_proj = nn.Linear(self.model_dim, out_steps * output_dim)
         # self.temporal_proj = TCNLayer(self.model_dim, self.model_dim, max_seq_length=in_steps)
-        self.temporal_proj = nn.Conv2d(
+        self.proj_x = nn.Conv2d(
             self.model_dim, self.model_dim, (1, kernel_size[0]), 1, 0
         )
-
     def forward(self, x):
         # x: (batch_size, in_steps, num_nodes, input_dim+tod+dow=3)
         batch_size = x.shape[0]
@@ -273,18 +272,20 @@ class ConFormer(nn.Module):
             )
             c = torch.concat([c, self.adp_dropout(adp_emb)], -1)
         if self.acc_embedding_dim > 0:
-            acc_emb = self.acc_embedding((x[..., 3] > 0).long())
+            acc_emb = self.acc_embedding((x[..., 3] > 0).long() * 1)
             c = torch.concat([c, acc_emb], -1)
         if self.reg_embedding_dim > 0:
-            reg_emb = self.reg_embedding((x[..., 4] > 0).long())
+            reg_emb = self.reg_embedding((x[..., 4] > 0).long() * 0)
             c = torch.concat([c, reg_emb], -1)
 
         x = torch.cat([x] + [c], dim=-1)  # (batch_size, in_steps, num_nodes, model_dim)
-        x = self.temporal_proj(x.transpose(1, 3)).transpose(1, 3)
+        c = x = self.proj_x(x.transpose(1, 3)).transpose(1, 3)
         x = self.attn_layers_st(x, c)
         x = self.encoder_proj(x.transpose(1, 2).flatten(-2))
         for layer in self.encoder:
-            x = x + layer(x) 
+            x = x + layer(x)
+        # (batch_size, in_steps, num_nodes, model_dim)
+
         out = self.output_proj(x).view(
             batch_size, self.num_nodes, self.out_steps, self.output_dim
         )
