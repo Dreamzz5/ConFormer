@@ -179,11 +179,6 @@ class ConFormer(nn.Module):
         self.reg_embedding_dim = reg_embedding_dim
         self.model_dim = (
             input_embedding_dim
-            + tod_embedding_dim
-            + dow_embedding_dim
-            + adaptive_embedding_dim
-            + acc_embedding_dim
-            + reg_embedding_dim
         )
         self.num_heads = num_heads
         self.num_layers = num_layers
@@ -278,7 +273,7 @@ class ConFormer(nn.Module):
             reg_emb = self.reg_embedding((x[..., 4] > 0).long() * 0)
             c = torch.concat([c, reg_emb], -1)
 
-        x = torch.cat([x] + [c], dim=-1)  # (batch_size, in_steps, num_nodes, model_dim)
+        x = torch.stack([x] + [c], dim=0).sum(0)  # (batch_size, in_steps, num_nodes, model_dim)
         c = x = self.proj_x(x.transpose(1, 3)).transpose(1, 3)
         x = self.attn_layers_st(x, c)
         x = self.encoder_proj(x.transpose(1, 2).flatten(-2))
