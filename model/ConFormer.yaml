@@ -25,11 +25,11 @@ TKY:
     input_dim: 1
     output_dim: 1
     input_embedding_dim: 32
-    tod_embedding_dim: 24
-    dow_embedding_dim: 8
-    acc_embedding_dim: 8
-    reg_embedding_dim: 8
-    adaptive_embedding_dim: 24
+    tod_embedding_dim: 32
+    dow_embedding_dim: 32
+    acc_embedding_dim: 32
+    reg_embedding_dim: 32
+    adaptive_embedding_dim: 32
     num_heads: 2
     num_layers: 3
     dropout: 0.1
@@ -38,86 +38,3 @@ TKY:
     tod_dropout: 0
     
 
-SD:
-  num_nodes: 716
-  in_steps: 12
-  out_steps: 12
-
-  train_size: 0.6
-  val_size: 0.2
-
-  time_of_day: True
-  day_of_week: True
-  accident: True
-
-  lr: 0.001
-  weight_decay: 0.001
-  milestones: [25, 45, 65]
-  lr_decay_rate: 0.1
-  batch_size: 16
-  max_epochs: 300
-  early_stop: 30
-  use_cl: False
-  cl_step_size: 2500
-
-  model_args:
-    num_nodes: 716
-    in_steps: 12
-    out_steps: 12
-    steps_per_day: 96
-    input_dim: 1
-    output_dim: 1
-    input_embedding_dim: 24
-    tod_embedding_dim: 12
-    dow_embedding_dim: 12
-    acc_embedding_dim: 8
-    adaptive_embedding_dim: 12
-    kernel_size: [8]
-    
-    num_heads: 4
-    num_layers: 4
-    dropout: 0.1
-    adp_dropout: 0.1
-    
-
-
-BA:
-  num_nodes: 2352
-  in_steps: 12
-  out_steps: 12
-
-  train_size: 0.6
-  val_size: 0.2
-
-  time_of_day: True
-  day_of_week: True
-
-  lr: 0.001
-  weight_decay: 0.001
-  milestones: [25, 45, 65]
-  lr_decay_rate: 0.1
-  batch_size: 8
-  max_epochs: 300
-  early_stop: 30
-  use_cl: False
-  cl_step_size: 2500
-
-  model_args:
-    num_nodes: 2352
-    in_steps: 12
-    out_steps: 12
-    steps_per_day: 96
-    input_dim: 1
-    output_dim: 1
-    input_embedding_dim: 24
-    tod_embedding_dim: 12
-    dow_embedding_dim: 12
-    acc_embedding_dim: 8
-    adaptive_embedding_dim: 12
-    kernel_size: [8]
-    
-    num_heads: 4
-    num_layers: 4
-    dropout: 0.1
-    adp_dropout: 0.1
-    
