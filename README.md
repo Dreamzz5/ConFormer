@@ -16,4 +16,4 @@ cd model/
 python train.py -d <dataset> -g <gpu_id>
 ```
 
-> **Note**: The datasets will be released upon paper acceptance. The complete datasets and preprocessing code will be available in the project repository.
+> **Note**: The accident datasets will be released upon paper acceptance. The complete datasets and preprocessing code will be available in the project repository.
